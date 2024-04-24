@@ -29,9 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<ArrayList<String>> bonos = new ArrayList<>();
     ArrayList<ArrayList<String>> descuentos = new ArrayList<>();
-    TextView txtNombre, txtBasico, txtBono, txtDescuento, txtLiq;
+    TextView txtNombre, txtBasico, txtBono, txtDescuento, txtLiq, txtTCargo, txtTLiq, txtTCasos, txtLCargo, txtLCasos, txtLLiq;
     EditText edtCarnet;
     Button btnBuscar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     //4844828
 
     //ejer2 53889, 88 personal, planilla 66, 22 que no cobran eso mostrar
@@ -122,9 +126,72 @@ public class MainActivity extends AppCompatActivity {
         txtLiq = findViewById(R.id.txtLiq);
         edtCarnet = findViewById(R.id.edtCarnet);
         btnBuscar = findViewById(R.id.btnBuscar);
+        txtTCargo = findViewById(R.id.txtTCargo);
+        txtTLiq = findViewById(R.id.txtTLiq);
+        txtTCasos = findViewById(R.id.txtTCasos);
+        txtLCargo = findViewById(R.id.txtLCargo);
+        txtLCasos = findViewById(R.id.txtLCasos);
+        txtLLiq = findViewById(R.id.txtLLiq);
     }
 
+    public void reporte(View v){
+        txtTCargo.setVisibility(View.VISIBLE);
+        txtTLiq.setVisibility(View.VISIBLE);
+        txtTCasos.setVisibility(View.VISIBLE);
 
+        int car = 0, cas = 0, liq = 0;
+
+        String Scargos = "";
+        String Scasos = "";
+        String Sliquidos = "";
+        String id_cargo = "";
+        String carnet = "";
+
+        for (int i = 1; i < cargos.size(); i++){
+            Scargos = Scargos + cargos.get(i).get(1) + "\n";
+            System.out.println(Scargos);
+            car++;
+            int desc = 0, bon = 0;
+            id_cargo = cargos.get(i).get(0);
+            int montosBonos = 0;
+            int montosDescuentos = 0;
+            int montosBasico = 0;
+            int montoCaso = 0;
+            for(int j = 1; j < planillas.size(); j++){
+                if(id_cargo.equals(planillas.get(j).get(2))){
+                    cas++;
+                    montoCaso++;
+                    carnet = planillas.get(j).get(1);
+                    montosBasico += Integer.parseInt(cargos.get(i).get(2));
+                    for(int k = 1; k < bonos.size(); k++){
+                        if(carnet.equals(bonos.get(k).get(1))){
+                            montosBonos += Integer.parseInt(bonos.get(k).get(2));
+                        }
+                    }
+
+                    for(int k = 1; k < descuentos.size(); k++){
+                        if(carnet.equals(descuentos.get(k).get(1))){
+                            montosDescuentos += Integer.parseInt(descuentos.get(k).get(2));
+                        }
+                    }
+
+                }
+            }
+
+            int liqTotal = montosBasico + montosBonos - montosDescuentos;
+            liq += liqTotal;
+            Scasos += String.valueOf(montoCaso) + "\n";
+            Sliquidos += String.valueOf(liqTotal) + "\n";
+
+        }
+        Scargos += "Total: " + String.valueOf(car);
+        Scasos += "Total: " + String.valueOf(cas);
+        Sliquidos += "Total: " + String.valueOf(liq);
+        txtLCargo.setText(Scargos);
+        txtLCasos.setText(Scasos);
+        txtLLiq.setText(Sliquidos);
+
+    }
     public void verificarPermisos(){
         accessFile();
     }
